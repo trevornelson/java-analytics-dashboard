@@ -16,6 +16,10 @@ import javax.inject.Named;
 )
 public class Dashboards {
 
+	private String extractUsername(String emailAddress) {
+		return emailAddress.split("@")[0];
+	}
+	
 	@ApiMethod(name = "dashboards.createAccount", httpMethod = "post")
 	public Account CreateAccount(final User user) {
 		String username = extractUsername(user.getEmail());	// add control flow to check if user already has account
