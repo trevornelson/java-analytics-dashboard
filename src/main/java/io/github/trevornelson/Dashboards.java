@@ -2,15 +2,15 @@ package io.github.trevornelson;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.response.NotFoundException;
+import com.google.api.server.spi.config.ApiMethod.HttpMethod;
+import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.users.User;
-import javax.inject.Named;
 import io.github.trevornelson.Account;
 
 @Api(
     name = "dashboards",
     version = "v1",
-    scopes = {Constants.EMAIL_SCOPE, Constants.ANALYTICS_SCOPE},
+    scopes = {Constants.EMAIL_SCOPE},
     clientIds = {Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID},
     audiences = {Constants.ANDROID_AUDIENCE}
 )
@@ -20,13 +20,20 @@ public class Dashboards {
 		return emailAddress.split("@")[0];
 	}
 	
-	@ApiMethod(name = "dashboards.createAccount", httpMethod = "post")
-	public Account CreateAccount(final User user) {
-		String username = extractUsername(user.getEmail());	// add control flow to check if user already has account
+	@ApiMethod(name = "dashboards.createAccount", httpMethod = HttpMethod.POST)
+	public Account CreateAccount(final User user, String accountUsername) throws UnauthorizedException {
+		
+		if (user == null) {
+			throw new UnauthorizedException("Authentication is required");
+		}
+		
 		String email = user.getEmail();
+		String username = extractUsername(email);
 		String userId = user.getUserId();
 		
-		return Account;
+		Account account = new Account(userId, username, email);
+		
+		return account;
 	}
 	
 	
