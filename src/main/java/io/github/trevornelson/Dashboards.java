@@ -4,8 +4,8 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.users.User;
-
 import javax.inject.Named;
+import io.github.trevornelson.Account;
 
 @Api(
     name = "dashboards",
