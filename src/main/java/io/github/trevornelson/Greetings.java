@@ -9,9 +9,6 @@ import java.util.ArrayList;
 
 import javax.inject.Named;
 
-/**
- * Defines v1 of a helloworld API, which provides simple "greeting" methods.
- */
 @Api(
     name = "helloworld",
     version = "v1",
