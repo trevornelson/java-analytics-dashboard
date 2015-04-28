@@ -1,9 +1,9 @@
-package io.github.trevornelson.service;
+package io.github.trevornelson.services;
 
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
-import io.github.trevornelson.Account;
+import io.github.trevornelson.models.Account;
 
 /**
  * Custom Objectify Service that this application should use.
