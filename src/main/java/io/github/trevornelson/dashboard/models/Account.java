@@ -1,11 +1,13 @@
 package io.github.trevornelson.dashboard.models;
 
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+
+@Entity
 public class Account {
-	private String id;
-	private String username;
-	private String email;
-	
-	private Account() {}
+	@Id String id;
+	String username;
+	String email;
 	
 	public Account(String id, String username, String email) {
 		this.id = id;
@@ -28,4 +30,6 @@ public class Account {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	
+	private Account() {}
 }
