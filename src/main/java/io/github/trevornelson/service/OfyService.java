@@ -1,9 +1,9 @@
 package io.github.trevornelson.service;
 
-import com.google.devrel.training.conference.domain.Profile;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
+import io.github.trevornelson.Account;
 
 /**
  * Custom Objectify Service that this application should use.
@@ -13,7 +13,7 @@ public class OfyService {
      * This static block ensure the entity registration.
      */
     static {
-        factory().register(Profile.class);
+        factory().register(Account.class);
     }
 
     /**
