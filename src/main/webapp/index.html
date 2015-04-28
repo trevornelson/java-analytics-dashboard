@@ -31,11 +31,7 @@
     
     <div id="dashboard-selector"></div>
 
-    <script type="text/javascript">
-        function init() {
-            google.devrel.samples.hello.init('//' + window.location.host + '/_ah/api');
-        }
-    </script>
+
     <script src="https://apis.google.com/js/client.js?onload=init"></script>
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
@@ -43,6 +39,11 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/app.js"></script>
+    <script type="text/javascript">
+        function init() {
+            App.init('//' + window.location.host + '/_ah/api');
+        }
+    </script>
 </div>
 </body>
 </html>
