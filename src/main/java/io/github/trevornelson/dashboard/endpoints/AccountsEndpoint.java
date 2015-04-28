@@ -16,7 +16,7 @@ import io.github.trevornelson.dashboard.models.Account;
 @Api(
     name = "accountsEndpoint",
     version = "v1",
-    scopes = {Constants.EMAIL_SCOPE},
+    scopes = {Constants.EMAIL_SCOPE, Constants.ANALYTICS_SCOPE},
     clientIds = {Constants.WEB_CLIENT_ID, Constants.API_EXPLORER_CLIENT_ID }
 )
 public class AccountsEndpoint {
