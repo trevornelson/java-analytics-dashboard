@@ -31,6 +31,15 @@ App.Models.Account = Backbone.Model.extend({
 	}
 });
 
+App.Views.AccountPage = Backbone.View.extend({
+	tagName: 'div',
+	className: 'panel panel-default',
+	template: template('account-view'),
+	render: function() {
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	}
+});
 
 /**
  * Dashboard MVC
@@ -108,7 +117,9 @@ App.userAuthenticated = function() {
   var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
     if (!resp.code) {
       App.loggedIn = true;
-      App.currentAccount = App.createAccount();
+      App.currentAccount = new App.Models.Account(App.createAccount());
+      var accountView = new App.Views.AccountPage(App.currentAccount);
+      $('#main-content').append(accountView.render().el);
     }
   });
 };
@@ -130,6 +141,7 @@ App.init = function(apiRoot) {
 	var apisToLoad;
 	var callback = function() {
 		if (--apisToLoad == 0) {
+			console.log('APIs loaded');
 			App.enableButtons();
 			App.signin(true, App.userAuthed);
 		}
