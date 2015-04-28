@@ -91,6 +91,36 @@ App.Collections.Widget = Backbone.Collection.extend({
 	model: App.Models.Widget
 });
 
+App.loggedIn = false;
+
+App.credentials = {
+		CLIENT_ID: "99492469869-a8phf2icj5576p0a1or8v25djbqlb32k.apps.googleusercontent.com",
+		SCOPES: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/analytics.readonly"
+}
+
+App.signin = function(mode, callback) {
+	  gapi.auth.authorize({client_id: App.credentials.CLIENT_ID,
+	      scope: App.credentials.SCOPES, immediate: mode},
+	      callback);
+};
+
+App.userAuthenticated = function() {
+  var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
+    if (!resp.code) {
+      App.loggedIn = true;
+      App.currentAccount = App.createAccount();
+    }
+  });
+};
+
+App.enableButtons = function() {
+	
+	// Add event listener to getAccount button
+	
+	// Add event listener to logout button
+	
+};
+
 
 /**
  * Initialize the app namespace on pageload
