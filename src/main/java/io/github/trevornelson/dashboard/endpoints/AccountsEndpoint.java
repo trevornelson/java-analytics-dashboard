@@ -25,7 +25,7 @@ public class AccountsEndpoint {
 		return emailAddress.split("@")[0];
 	}
 	
-	@ApiMethod(name = "accountsEndpoint.createAccount", httpMethod = HttpMethod.POST)
+	@ApiMethod(name = "createAccount", httpMethod = HttpMethod.POST)
 	public Account CreateAccount(final User user) throws UnauthorizedException {
 		
 		if (user == null) {

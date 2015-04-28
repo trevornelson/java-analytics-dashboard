@@ -117,7 +117,9 @@ App.userAuthenticated = function() {
   var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
     if (!resp.code) {
       App.loggedIn = true;
-      App.currentAccount = new App.Models.Account(App.createAccount());
+      var apiResponse = gapi.client.accountsEndpoint.createAccount();
+      console.log(apiResponse);
+      App.currentAccount = new App.Models.Account(apiResponse);
       var accountView = new App.Views.AccountPage(App.currentAccount);
       $('#main-content').append(accountView.render().el);
     }
@@ -138,7 +140,6 @@ App.enableButtons = function() {
 
 
 /**
- * Initialize the app namespace on pageload
  * Loads OAuth and Dashboard APIs and triggers login when they have completed.
  */
 App.init = function(apiRoot) {
