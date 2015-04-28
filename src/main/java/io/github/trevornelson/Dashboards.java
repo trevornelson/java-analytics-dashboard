@@ -11,8 +11,7 @@ import io.github.trevornelson.Account;
     name = "dashboards",
     version = "v1",
     scopes = {Constants.EMAIL_SCOPE},
-    clientIds = {Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID},
-    audiences = {Constants.ANDROID_AUDIENCE}
+    clientIds = {Constants.WEB_CLIENT_ID, Constants.API_EXPLORER_CLIENT_ID }
 )
 public class Dashboards {
 
@@ -21,7 +20,7 @@ public class Dashboards {
 	}
 	
 	@ApiMethod(name = "dashboards.createAccount", httpMethod = HttpMethod.POST)
-	public Account CreateAccount(final User user, String accountUsername) throws UnauthorizedException {
+	public Account CreateAccount(final User user) throws UnauthorizedException {
 		
 		if (user == null) {
 			throw new UnauthorizedException("Authentication is required");
