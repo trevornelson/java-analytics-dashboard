@@ -37,7 +37,7 @@ public class AccountsEndpoint {
 		Key key = Key.create(Account.class, userId);
         Account account = (Account) ofy().load().key(key).now(); // This is called casting- used when a method outputs an object of a raw or variable type from what it seems like?
 		
-        if (account != null) {
+        if (account == null) {
     		String email = user.getEmail();
     		String username = extractUsername(email);
         	account = new Account(userId, username, email);
