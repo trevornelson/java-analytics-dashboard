@@ -23,24 +23,42 @@
 		return _.template( $('#' + id).html() );
 	};
 	
+	/**
+	 * Account MVC
+	 */
 	App.Models.Account = Backbone.Model.extend({
 		defaults: {
-			'id': '',
-			'username': '',
-			'email': '',
-			'dashboards': []
+			id: '',
+			username: '',
+			email: '',
+			dashboards: []
 		}
 	});
 	
+	
+	/**
+	 * Dashboard MVC
+	 */
 	App.Models.Dashboard = Backbone.Model.extend({
 		defaults: {
-			'widgets': []
+			widgets: []
 		}
 	});
 	
+	App.Collections.Dasboard = Backbone.Collection.extend({
+		model: App.Models.Dashboard
+	});
+	
+	/**
+	 * Widget MVC
+	 */
 	App.Models.Widget = Backbone.Model.extend({
 		defaults: {
-			'title': ''
+			title: ''
 		}
+	});
+	
+	App.Collections.Widget = Backbone.Collection.extend({
+		model: App.Models.Widget
 	});
 });
