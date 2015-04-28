@@ -45,6 +45,11 @@
             <artifactId>jdo-api</artifactId>
             <version>3.0.1</version>
         </dependency>
+	    <dependency>
+	      <groupId>com.googlecode.objectify</groupId>
+	      <artifactId>objectify</artifactId>
+	      <version>5.1.5</version>
+	    </dependency>
 
         <!-- Test Dependencies -->
         <dependency>
