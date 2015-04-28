@@ -143,7 +143,7 @@ App.createAccount = function() {
 		function(resp) {
 			if (!resp.code) {
 				App.currentAccount = new App.Models.Account({id: resp.id, username: resp.username, email: resp.email});
-				var accountView = new App.Views.AccountPage(App.currentAccount);
+				var accountView = new App.Views.AccountPage({model: App.currentAccount});
 				console.log(accountView);
 				$('#main-content').append(accountView.render().el);
 			} else {
