@@ -22,4 +22,25 @@
 	window.template = function(id) {
 		return _.template( $('#' + id).html() );
 	};
+	
+	App.Models.Account = Backbone.Model.extend({
+		defaults: {
+			'id': '',
+			'username': '',
+			'email': '',
+			'dashboards': []
+		}
+	});
+	
+	App.Models.Dashboard = Backbone.Model.extend({
+		defaults: {
+			'widgets': []
+		}
+	});
+	
+	App.Models.Widget = Backbone.Model.extend({
+		defaults: {
+			'title': ''
+		}
+	});
 });
