@@ -5,6 +5,7 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.users.User;
+import io.github.trevornelson.service.OfyService.ofy;
 import io.github.trevornelson.Account;
 
 @Api(
@@ -32,9 +33,9 @@ public class Dashboards {
 		
 		Account account = new Account(userId, username, email);
 		
+		ofy().save().entity(account).now();
+		
 		return account;
 	}
 	
-	
-
 }
