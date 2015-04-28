@@ -1,13 +1,13 @@
-package io.github.trevornelson.endpoints;
+package io.github.trevornelson.dashboard.endpoints;
 
-import static io.github.trevornelson.services.OfyService.ofy;
+import static io.github.trevornelson.dashboard.services.OfyService.ofy;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.users.User;
-import io.github.trevornelson.Constants;
-import io.github.trevornelson.models.Account;
+import io.github.trevornelson.dashboard.Constants;
+import io.github.trevornelson.dashboard.models.Account;
 
 
 @Api(

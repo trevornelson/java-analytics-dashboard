@@ -1,4 +1,4 @@
-package io.github.trevornelson.models;
+package io.github.trevornelson.dashboard.models;
 
 public class Account {
 	private String id;

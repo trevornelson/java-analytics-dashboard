@@ -1,4 +1,4 @@
-package io.github.trevornelson.models;
+package io.github.trevornelson.dashboard.models;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;

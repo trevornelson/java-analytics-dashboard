@@ -1,4 +1,4 @@
-package io.github.trevornelson;
+package io.github.trevornelson.dashboard;
 
 import com.google.api.server.spi.Constant;
 

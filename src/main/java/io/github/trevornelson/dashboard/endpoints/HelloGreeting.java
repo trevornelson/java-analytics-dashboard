@@ -1,4 +1,4 @@
-package io.github.trevornelson.endpoints;
+package io.github.trevornelson.dashboard.endpoints;
 
 public class HelloGreeting {
 
