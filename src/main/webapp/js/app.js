@@ -117,11 +117,7 @@ App.userAuthenticated = function() {
   var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
     if (!resp.code) {
       App.loggedIn = true;
-      var apiResponse = gapi.client.accountsEndpoint.createAccount();
-      console.log(apiResponse);
-      App.currentAccount = new App.Models.Account(apiResponse);
-      var accountView = new App.Views.AccountPage(App.currentAccount);
-      $('#main-content').append(accountView.render().el);
+      App.createAccount();
     }
   });
 };
@@ -137,6 +133,25 @@ App.enableButtons = function() {
 	// Add event listener to logout button
 	
 };
+
+
+/**
+ * App endpoint method calls
+ */
+App.createAccount = function() {
+	gapi.client.accountsEndpoint.createAccount().execute(
+		function(resp) {
+			if (!resp.code) {
+				App.currentAccount = new App.Models.Account({id: resp.id, username: resp.username, email: resp.email});
+				var accountView = new App.Views.AccountPage(App.currentAccount);
+				console.log(accountView);
+				$('#main-content').append(accountView.render().el);
+			} else {
+				window.alert(resp.message);
+			}
+		}
+	);
+}
 
 
 /**
