@@ -50,6 +50,39 @@
 	});
 	
 	/**
+	 * View for dashboard selector containing all dashboards a user has created.
+	 * Appends to #dashboard-selector div.
+	 */
+	App.Views.Dashboards = Backbone.View.extend({
+		tagName: 'div',
+		className: 'row',
+		render: function() {
+			this.collection.each(function(dashboard) {
+				var dashboardSelectView = new App.Views.DashboardSelect( { model: dashboard} );
+				this.$el.append(dashboardSelectView.render().el);
+			}, this);
+			
+			return this;
+		}
+	});
+	
+	
+	/**
+	 * View for each dashboard a user has created. Displayed in Dashboards view.
+	 * Uses #dashboard-select as template.
+	 */
+	App.Views.DashboardSelect = Backbone.View.extend({
+		tagName: 'div',
+		className: 'col-md-3',
+		template: template('dashboard-select'),
+		render: function() {
+			this.$el.html(this.template(this.model.toJSON()));
+			return this;
+		}
+	});
+	
+	
+	/**
 	 * Widget MVC
 	 */
 	App.Models.Widget = Backbone.Model.extend({
