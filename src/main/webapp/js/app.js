@@ -127,6 +127,10 @@ App.userAuthenticated = function() {
 App.enableButtons = function() {
 	
 	// Add event listener to getAccount button
+	$('#createAccount').on('click', function(e) {
+		e.preventDefault();
+		App.signin(false, App.userAuthenticated);
+	});
 	
 	// Add event listener to logout button
 	
@@ -143,12 +147,11 @@ App.init = function(apiRoot) {
 		if (--apisToLoad == 0) {
 			console.log('APIs loaded');
 			App.enableButtons();
-			App.signin(true, App.userAuthed);
 		}
 	}
 	
 	apisToLoad = 2; // must match the number of calls to gapi.client.load()
 	gapi.client.load('accountsEndpoint', 'v1', callback, apiRoot);
-	// gapi.client.load('dashboardsEndpoint', 'v1', callback, apiRoot); // TODO create dashboardsEndpoint, increment apisToLoad
+	// gapi.client.load('dashboardsEndpoint', 'v1', callback, apiRoot);  TODO create dashboardsEndpoint, increment apisToLoad
 	gapi.client.load('oauth2', 'v2', callback);
 }
