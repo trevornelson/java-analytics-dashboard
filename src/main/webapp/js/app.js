@@ -57,24 +57,7 @@ App.Collections.Dashboard = Backbone.Collection.extend({
 });
 
 /**
- * View for dashboard selector containing all dashboards a user has created.
- * Appends to #dashboard-selector div.
- */
-App.Views.Dashboards = Backbone.View.extend({
-	tagName: 'div',
-	className: 'row',
-	render: function() {
-		this.collection.each(function(dashboard) {
-			var dashboardSelectView = new App.Views.DashboardSelect( { model: dashboard} );
-			this.$el.append(dashboardSelectView.render().el);
-		}, this);
-		
-		return this;
-	}
-});
-
-
-/**
+ * UNUSED AT THIS TIME
  * View for each dashboard a user has created. Displayed in Dashboards view.
  * Uses #dashboard-select as template.
  */
