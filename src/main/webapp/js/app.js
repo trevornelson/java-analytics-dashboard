@@ -42,6 +42,25 @@ App.Views.AccountPage = Backbone.View.extend({
 	}
 });
 
+App.Views.CreateDashboardModal = Backbone.View.extend({
+	tagName: 'div',
+	className: 'modal fade',
+	id: 'google-analytics-' + this.model.name,
+	template: template('modal-template'),
+	attributes: {
+		'tabindex': -1,
+		'role': 'dialog'
+	},
+	render: function() {
+		// extend the model with contextual modal content for rendering.
+		$.extend(this.model, {title: 'Create new dashboard', subtitle: 'Select a profile', body: 'testing', callToAction: 'Create Dashboard'});
+		// disable the call to action button, since this version of the modal template should have it.
+//		var $ctaButton = ('#' + this.id).find('.modal-cta');
+//		$ctaButton.removeClass('hidden');
+		this.$el.html(this.template(this.model.toJSON()));
+	}
+});
+
 /**
  * Dashboard MVC
  */
@@ -85,6 +104,10 @@ App.Collections.Widget = Backbone.Collection.extend({
 	model: App.Models.Widget
 });
 
+/**
+ * Authentication Controller
+ */
+
 App.loggedIn = false;
 
 App.credentials = {
@@ -107,7 +130,11 @@ App.userAuthenticated = function() {
   });
 };
 
-App.enableButtons = function() {
+/**
+ * UI Controller
+ */
+
+App.enableAuthButtons = function() {
 	
 	// Add event listener to getAccount button
 	$('#createAccount').on('click', function(e) {
@@ -119,6 +146,17 @@ App.enableButtons = function() {
 	
 };
 
+App.enableNewDashButton = function() {
+	$('#add-dashboard').on('click', function(e) {
+		e.preventDefault();
+		App.newDashboardModal();
+	});
+}
+
+
+App.newDashboardModal = function() {
+	gapi.client.analytics.management.accounts.list().execute();
+}
 
 /**
  * App endpoint method calls
@@ -151,7 +189,7 @@ App.init = function(apiRoot) {
 	var callback = function() {
 		if (--apisToLoad == 0) {
 			console.log('APIs loaded');
-			App.enableButtons();
+			App.enableAuthButtons();
 		}
 	}
 	
