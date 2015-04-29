@@ -57,7 +57,7 @@ App.Views.CreateDashboardModal = Backbone.View.extend({
 		// disable the call to action button, since this version of the modal template should have it.
 //		var $ctaButton = ('#' + this.id).find('.modal-cta');
 //		$ctaButton.removeClass('hidden');
-		this.$el.html(this.template(this.model.toJSON()));
+		this.$el.html(this.template(this.model));
 		return this;
 	}
 });
