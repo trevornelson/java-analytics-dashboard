@@ -56,25 +56,45 @@
     <script type="text/template" id="dashboard-select">
     </script>
     
-    <script type="text/template" id="modal-template">
+    <script type="text/template" id="create-dashboard-template">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title"><%= title %></h4>
+					<h4 class="modal-title">Create New Dashboard</h4>
 				</div>
 				<div class="modal-body">
-					<%= subtitle %>
-					<%= body %>
+					<div class="row">
+						<div class="input-group">
+							<span class="input-group-addon">Title:</span>
+							<input type="text" class="form-control" placeholder="Enter dashboard title..." id="new-dashboard-title">
+						</div>
+						<input type="hidden" id="new-dashboard-account">
+						<input type="hidden" id="new-dashboard-property">
+						<input type="hidden" id="new-dashboard-profile">
+					</div>
+					<h4>Select Account/Property/Profile</h4>
+					<div class="row" id="new-dashboard-profile-selector">
+						<div class="ga-selector col-md-4" id="ga-accounts"></div>
+						<div class="ga-selector col-md-4" id="ga-properties"></div>
+						<div class="ga-selector col-md-4" id="ga-profiles"></div>
+					</div>			
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary modal-cta hidden"><%= callToAction %></button>
+					<button type="button" class="btn btn-primary" id="new-dashboard-submit">Create</button>
 				</div>
 			</div>
 		</div>
+	</script>
+	
+	<script type="text/template" id="ga-account-resources">
+		<a href="#" class="list-group-item ga-resource">
+			<p><strong><%= name %></strong></p>
+			<em><%= id %></em>
+		</a>
 	</script>
 	    
 	

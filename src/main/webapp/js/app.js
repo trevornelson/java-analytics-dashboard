@@ -46,25 +46,35 @@ App.Views.CreateDashboardModal = Backbone.View.extend({
 	tagName: 'div',
 	className: 'modal fade',
 	id: 'create-dashboard-modal',
-	template: template('modal-template'),
+	template: template('create-dashboard-template'),
 	attributes: {
 		'tabindex': -1,
 		'role': 'dialog'
 	},
 	render: function() {
-		// extend the model with contextual modal content for rendering.
-		$.extend(this.model, {title: 'Create new dashboard', subtitle: 'Select a profile', body: 'testing', callToAction: 'Create Dashboard'});
-		// disable the call to action button, since this version of the modal template should have it.
-//		var $ctaButton = ('#' + this.id).find('.modal-cta');
-//		$ctaButton.removeClass('hidden');
-		this.$el.html(this.template(this.model));
+		var accountList = new App.Views.AnalyticsResources({collection: this.collection});
+		this.$el.html(this.template);
+		this.$el.find('#ga-accounts').append(accountList.render().el);
+		return this;
+	}
+});
+
+App.Views.AnalyticsResources = Backbone.View.extend({
+	tagName: 'ul',
+	className: 'list-group',
+	template: template('ga-account-resources'),
+	render: function() {
+		this.collection.each(function(resource) {
+			this.$el.append(this.template(resource));
+		}, this);
 		return this;
 	}
 });
 
 /**
  * Dashboard MVC
- */
+ */		// extend the model with contextual modal content for rendering.
+$.extend(this.model, {title: 'Create new dashboard', subtitle: 'Select a profile', callToAction: 'Create Dashboard' });
 App.Models.Dashboard = Backbone.Model.extend({
 	defaults: {
 		name: 'New Dashboard',
@@ -148,7 +158,6 @@ App.enableAuthButtons = function() {
 };
 
 App.enableNewDashButton = function() {
-	console.log('enabling new dash button');
 	$('#add-dashboard').on('click', function(e) {
 		e.preventDefault();
 		App.queryAccounts(App.newDashboardModal);
@@ -157,8 +166,7 @@ App.enableNewDashButton = function() {
 
 
 App.newDashboardModal = function(resp) {
-	console.log(resp);
-	var dashboardModal = new App.Views.CreateDashboardModal({model: resp.items});
+	var dashboardModal = new App.Views.CreateDashboardModal({collection: resp.items});
 	$('#main-content').append(dashboardModal.render().el);
 	$('#create-dashboard-modal').modal({handleUpdate: true});
 }
@@ -188,7 +196,7 @@ App.createAccount = function() {
 
 // Google Analytics API call to query all accounts
 App.queryAccounts = function(callback) {
-	gapi.client.analytics.management.accounts.list().execute(callback);
+	gapi.client.analytics.management.accountSummaries.list().execute(callback);
 }
 
 /**
