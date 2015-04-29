@@ -126,6 +126,7 @@ App.userAuthenticated = function() {
     if (!resp.code) {
       App.loggedIn = true;
       App.createAccount();
+      App.enableNewDashButton();
     }
   });
 };
@@ -155,7 +156,8 @@ App.enableNewDashButton = function() {
 
 
 App.newDashboardModal = function() {
-	gapi.client.analytics.management.accounts.list().execute();
+	var analyticsAccounts = gapi.client.analytics.management.accounts.list().execute();
+	var dashboardModal = new App.Views.CreateDashboard({model: analyticsAccounts});
 }
 
 /**
