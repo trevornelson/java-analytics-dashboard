@@ -45,7 +45,7 @@ App.Views.AccountPage = Backbone.View.extend({
 App.Views.CreateDashboardModal = Backbone.View.extend({
 	tagName: 'div',
 	className: 'modal fade',
-	id: 'google-analytics-' + this.model.name,
+	id: 'create-dashboard-modal',
 	template: template('modal-template'),
 	attributes: {
 		'tabindex': -1,
@@ -158,6 +158,8 @@ App.enableNewDashButton = function() {
 App.newDashboardModal = function() {
 	var analyticsAccounts = gapi.client.analytics.management.accounts.list().execute();
 	var dashboardModal = new App.Views.CreateDashboard({model: analyticsAccounts});
+	$('#main-content').append(dashboardModal.render().el);
+	$('#create-dashboard-modal').modal('handleUpdate');
 }
 
 /**
