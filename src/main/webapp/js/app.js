@@ -160,7 +160,7 @@ App.newDashboardModal = function(resp) {
 	console.log(resp);
 	var dashboardModal = new App.Views.CreateDashboardModal({model: resp.items});
 	$('#main-content').append(dashboardModal.render().el);
-	$('#create-dashboard-modal').modal('handleUpdate');
+	$('#create-dashboard-modal').modal({handleUpdate: true});
 }
 
 /**
