@@ -248,7 +248,7 @@ App.queryProperties = function(accountId, callback) {
 App.queryProfiles = function(accountId, propertyId, callback) {
 	gapi.client.analytics.management.profiles.list({
 		'accountId': accountId,
-		'propertyId': propertyId
+		'webPropertyId': propertyId
 	}).execute(callback);
 }
 
