@@ -209,6 +209,10 @@ App.enableAnalyticsSelectors = function() {
 		var profileId = $target.data('id');
 		$('#new-dashboard-profile').val(profileId);
 	});
+	
+	$('#create-dashboard-modal').on('hidden.bs.modal', function(e) {
+		this.remove();
+	});
 }
 
 /**
