@@ -71,7 +71,6 @@ App.Views.AnalyticsResources = Backbone.View.extend({
 	template: template('ga-account-resources'),
 	render: function() {
 		for(i = 0; i < this.collection.length; i++) {
-			console.log(this.collection[i]);
 			this.$el.append(this.template(this.collection[i]));
 		}
 		return this;
@@ -88,21 +87,14 @@ App.Models.Dashboard = Backbone.Model.extend({
 	}
 });
 
-App.Collections.Dashboard = Backbone.Collection.extend({
-	model: App.Models.Dashboard
-});
-
-/**
- * UNUSED AT THIS TIME
- * View for each dashboard a user has created. Displayed in Dashboards view.
- * Uses #dashboard-select as template.
- */
-App.Views.DashboardSelect = Backbone.View.extend({
+App.Views.DashboardEdit = Backbone.View.extend({
 	tagName: 'div',
-	className: 'col-md-3',
-	template: template('dashboard-select'),
+	className: 'well well-lg',
+	template: template('edit-dashboard'),
 	render: function() {
-		this.$el.html(this.template(this.model.toJSON()));
+		var widgetsView = new App.Views.Widgets({collection: this.widgets})
+		this.$el.html(this.template);
+		this.$el.prepend(widgetsView.render().el);
 		return this;
 	}
 });
@@ -130,6 +122,28 @@ App.Models.Widget = Backbone.Model.extend({
 
 App.Collections.Widget = Backbone.Collection.extend({
 	model: App.Models.Widget
+});
+
+App.Views.Widgets = Backbone.View.extend({
+	tagName: 'div',
+	className: 'row',
+	render: function() {
+		for(i = 0; i < this.collection.length; i++) {
+			var widget = new App.Views.Widget({model: this.collection[i]});
+			this.$el.append(widget.render().el);
+		}
+		return this;
+	}
+});
+
+App.Views.Widget = Backbone.View.extend({
+	tagName: 'div',
+	className: 'col-md-6',
+	template: template('widget-template');
+	render: function() {
+		this.$el.html(this.template(this.model));
+		return this;
+	}
 });
 
 /**
@@ -222,6 +236,51 @@ App.enableAnalyticsSelectors = function() {
 	
 	$('#create-dashboard-modal').on('hidden.bs.modal', function(e) {
 		this.remove();
+	});
+	
+	$('#new-dashboard-submit').on('click', function(e) {
+		e.preventDefault();
+		var title = $('#new-dashboard-title').val();
+		var accountId = $('#new-dashboard-account').val();
+		var propertyId = $('#new-dashboard-property').val();
+		var profileId = $('#new-dashboard-profile').val();
+		
+		newDashboard = new App.Models.Dashboard({
+			title: title,
+			accountId: accountId,
+			propertyId: propertyId,
+			profileId: profileId
+		});
+		
+		// hide the modal after extracting the form inputs, because the modal is destroyed on hide.
+		('$create-dashboard-modal').modal('hide');
+		
+		var dashboardEditView = new App.Views.DashboardEdit({model: newDashboard});
+		$('#account-view-body').html(dashboardEditView.render().el);
+		App.enableNewWidgetSubmit(newDashboard); // adds event listener for new widget button in newly created dashboard
+	});
+}
+
+App.enableNewWidgetSubmit = function(dashboard) {
+	$('#new-widget-submit').on('click', function(e) {
+		e.preventDefault();
+		var title = $('#new-widget-title');
+		var dimensions = $('#new-widget-dimensions');
+		var metrics = $('#new-widget-metrics');
+		var filters = $('#new-widget-filters');
+		var startDate = $('#new-widget-start');
+		var endDate = $('#new-widget-end');
+		
+		newWidget = new App.Models.Dashboard({
+			title: title,
+			dimensions: dimensions,
+			metrics: metrics,
+			filters: filters,
+			startDate: startDate,
+			endDate: endDate
+		});
+		
+		dashboard.widgets.push(newWidget);
 	});
 }
 
