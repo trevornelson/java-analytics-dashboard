@@ -58,6 +58,7 @@ App.Views.CreateDashboardModal = Backbone.View.extend({
 //		var $ctaButton = ('#' + this.id).find('.modal-cta');
 //		$ctaButton.removeClass('hidden');
 		this.$el.html(this.template(this.model.toJSON()));
+		return this;
 	}
 });
 
@@ -126,7 +127,6 @@ App.userAuthenticated = function() {
     if (!resp.code) {
       App.loggedIn = true;
       App.createAccount();
-      App.enableNewDashButton();
     }
   });
 };
@@ -148,6 +148,7 @@ App.enableAuthButtons = function() {
 };
 
 App.enableNewDashButton = function() {
+	console.log('enabling new dash button');
 	$('#add-dashboard').on('click', function(e) {
 		e.preventDefault();
 		App.newDashboardModal();
@@ -177,6 +178,7 @@ App.createAccount = function() {
 				
 				var accountView = new App.Views.AccountPage({model: App.currentAccount});
 				$('#main-content').append(accountView.render().el);
+				App.enableNewDashButton();
 			} else {
 				window.alert(resp.message);
 			}
