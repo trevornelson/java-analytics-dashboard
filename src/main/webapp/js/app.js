@@ -80,11 +80,10 @@ App.Views.AnalyticsResources = Backbone.View.extend({
 
 /**
  * Dashboard MVC
- */		// extend the model with contextual modal content for rendering.
-$.extend(this.model, {title: 'Create new dashboard', subtitle: 'Select a profile', callToAction: 'Create Dashboard' });
+ */
+
 App.Models.Dashboard = Backbone.Model.extend({
 	defaults: {
-		name: 'New Dashboard',
 		widgets: []
 	}
 });
@@ -114,7 +113,18 @@ App.Views.DashboardSelect = Backbone.View.extend({
  */
 App.Models.Widget = Backbone.Model.extend({
 	defaults: {
-		title: ''
+		ids: '',
+		startDate': '',
+		endDate: '',
+		metrics: '',
+		dimensions: '',
+		title: 'New widget'
+	},
+	setStartDate: function(dateObject) {
+		this.startDate = dateObject.toISOString().slice(0,10).replace(/-/g, "");
+	},
+	setEndDate: function(dateObject) {
+		this.endDate = dateObject.toISOString().slice(0,10).replace(/-/g, "");
 	}
 });
 
