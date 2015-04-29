@@ -31,6 +31,12 @@ App.Models.Account = Backbone.Model.extend({
 	}
 });
 
+App.Models.AnalyticsResource = Backbone.Model.extend({
+	defaults: {
+		id: ''
+	}
+});
+
 App.Views.AccountPage = Backbone.View.extend({
 	tagName: 'div',
 	className: 'panel panel-default',
@@ -64,9 +70,10 @@ App.Views.AnalyticsResources = Backbone.View.extend({
 	className: 'list-group',
 	template: template('ga-account-resources'),
 	render: function() {
-		this.collection.each(function(resource) {
-			this.$el.append(this.template(resource));
-		}, this);
+		for(i = 0; i < this.collection.length; i++) {
+			console.log(this.collection[i]);
+			this.$el.append(this.template(this.collection[i]));
+		}
 		return this;
 	}
 });
