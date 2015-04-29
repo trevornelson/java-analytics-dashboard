@@ -151,14 +151,14 @@ App.enableNewDashButton = function() {
 	console.log('enabling new dash button');
 	$('#add-dashboard').on('click', function(e) {
 		e.preventDefault();
-		App.newDashboardModal();
+		App.queryAccounts(App.newDashboardModal);
 	});
 }
 
 
-App.newDashboardModal = function() {
-	var analyticsAccounts = gapi.client.analytics.management.accounts.list().execute();
-	var dashboardModal = new App.Views.CreateDashboard({model: analyticsAccounts});
+App.newDashboardModal = function(resp) {
+	console.log(resp);
+	var dashboardModal = new App.Views.CreateDashboardModal({model: resp.items});
 	$('#main-content').append(dashboardModal.render().el);
 	$('#create-dashboard-modal').modal('handleUpdate');
 }
@@ -186,6 +186,10 @@ App.createAccount = function() {
 	);
 }
 
+// Google Analytics API call to query all accounts
+App.queryAccounts = function(callback) {
+	gapi.client.analytics.management.accounts.list().execute(callback);
+}
 
 /**
  * Loads OAuth and Dashboard APIs and triggers login when they have completed.
