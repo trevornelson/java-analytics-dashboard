@@ -181,10 +181,10 @@ App.newDashboardModal = function(resp) {
 
 App.enableAnalyticsSelectors = function() {
 	$('#ga-accounts').on('click', '.ga-resource', function(e) {
-		console.log('click event fired');
 		e.preventDefault();
 		var $target = $(e.target);
 		var accountId = $target.data('id');
+		$('#new-dashboard-account').val(accountId);
 		App.queryProperties(accountId, function(resp) {
 			var analyticsProperties = new App.Views.AnalyticsResources({collection: resp.items});
 			$('#ga-properties').append(analyticsProperties.render().el);
@@ -193,10 +193,21 @@ App.enableAnalyticsSelectors = function() {
 	
 	$('#ga-properties').on('click', '.ga-resource', function(e) {
 		e.preventDefault();
+		var $target = $(e.target);
+		var accountId = $('#new-dashboard-account').val();
+		var propertyId = $target.data('id');
+		$('#new-dashboard-property').val(propertyId);
+		App.queryProfiles(accountId, propertyId, function(resp) {
+			var analyticsProfiles = new App.Views.AnalyticsResources({collection: resp.items});
+			$('#ga-profiles').append(analyticsProfiles.render().el);
+		});
 	});
 	
 	$('#ga-profiles').on('click', '.ga-resource', function(e) {
 		e.preventDefault();
+		var $target = $(e.target);
+		var profileId = $target.data('id');
+		$('#new-dashboard-profile').val(profileId);
 	});
 }
 
