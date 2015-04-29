@@ -155,8 +155,9 @@ App.init = function(apiRoot) {
 		}
 	}
 	
-	apisToLoad = 2; // must match the number of calls to gapi.client.load()
+	apisToLoad = 3; // must match the number of calls to gapi.client.load()
 	gapi.client.load('accountsEndpoint', 'v1', callback, apiRoot);
 	// gapi.client.load('dashboardsEndpoint', 'v1', callback, apiRoot);  TODO create dashboardsEndpoint, increment apisToLoad
 	gapi.client.load('oauth2', 'v2', callback);
+	gapi.client.load('analytics', 'v3', callback);
 }
