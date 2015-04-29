@@ -106,7 +106,7 @@ App.Views.DashboardEdit = Backbone.View.extend({
 App.Models.Widget = Backbone.Model.extend({
 	defaults: {
 		ids: '',
-		startDate': '',
+		startDate: '',
 		endDate: '',
 		metrics: '',
 		dimensions: '',
