@@ -245,6 +245,13 @@ App.queryProperties = function(accountId, callback) {
 	  }).execute(callback);
 }
 
+App.queryProfiles = function(accountId, propertyId, callback) {
+	gapi.client.analytics.management.profiles.list({
+		'accountId': accountId,
+		'propertyId': propertyId
+	}).execute(callback);
+}
+
 /**
  * Loads OAuth and Dashboard APIs and triggers login when they have completed.
  */
