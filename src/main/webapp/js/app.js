@@ -176,6 +176,28 @@ App.newDashboardModal = function(resp) {
 	var dashboardModal = new App.Views.CreateDashboardModal({collection: resp.items});
 	$('#main-content').append(dashboardModal.render().el);
 	$('#create-dashboard-modal').modal({handleUpdate: true});
+	App.enableAnalyticsSelectors();
+}
+
+App.enableAnalyticsSelectors = function() {
+	$('#ga-accounts').on('click', '.ga-resource', function(e) {
+		console.log('click event fired');
+		e.preventDefault();
+		var $target = $(e.target);
+		var accountId = $target.data('id');
+		App.queryProperties(accountId, function(resp) {
+			var analyticsProperties = new App.Views.AnalyticsResources({collection: resp.items});
+			$('#ga-properties').append(analyticsProperties.render().el);
+		});
+	});
+	
+	$('#ga-properties').on('click', '.ga-resource', function(e) {
+		e.preventDefault();
+	});
+	
+	$('#ga-profiles').on('click', '.ga-resource', function(e) {
+		e.preventDefault();
+	});
 }
 
 /**
@@ -203,7 +225,13 @@ App.createAccount = function() {
 
 // Google Analytics API call to query all accounts
 App.queryAccounts = function(callback) {
-	gapi.client.analytics.management.accountSummaries.list().execute(callback);
+	gapi.client.analytics.management.accounts.list().execute(callback);
+}
+
+App.queryProperties = function(accountId, callback) {
+	gapi.client.analytics.management.webproperties.list({
+	    'accountId': accountId
+	  }).execute(callback);
 }
 
 /**
