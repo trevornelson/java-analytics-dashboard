@@ -36,7 +36,8 @@ App.Views.AccountPage = Backbone.View.extend({
 	className: 'panel panel-default',
 	template: template('account-view'),
 	render: function() {
-		this.$el.html(this.template(this.model.toJSON()));
+		var jsonModel = this.model.toJSON();
+		this.$el.html(this.template(jsonModel));
 		return this;
 	}
 });
@@ -46,11 +47,12 @@ App.Views.AccountPage = Backbone.View.extend({
  */
 App.Models.Dashboard = Backbone.Model.extend({
 	defaults: {
+		name: 'New Dashboard',
 		widgets: []
 	}
 });
 
-App.Collections.Dasboard = Backbone.Collection.extend({
+App.Collections.Dashboard = Backbone.Collection.extend({
 	model: App.Models.Dashboard
 });
 
@@ -142,9 +144,13 @@ App.createAccount = function() {
 	gapi.client.accountsEndpoint.createAccount().execute(
 		function(resp) {
 			if (!resp.code) {
-				App.currentAccount = new App.Models.Account({id: resp.id, username: resp.username, email: resp.email});
+				App.currentAccount = new App.Models.Account({id: resp.id,
+															username: resp.username,
+															email: resp.email,
+															dashboards: [{name: 'Client Dashboard'}, {name: 'Client2 Dashboard'}]
+				});
+				
 				var accountView = new App.Views.AccountPage({model: App.currentAccount});
-				console.log(accountView);
 				$('#main-content').append(accountView.render().el);
 			} else {
 				window.alert(resp.message);
