@@ -83,8 +83,12 @@ App.Views.AnalyticsResources = Backbone.View.extend({
  * Widget MVC
  */
 App.Models.Widget = Backbone.Model.extend({
+	initialize: function() {
+		this.query = this.constructQuery();
+		this.executeQuery();
+	},
 	defaults: {
-		ids: '',
+		profileId: '',
 		startDate: '',
 		endDate: '',
 		metrics: '',
@@ -96,6 +100,25 @@ App.Models.Widget = Backbone.Model.extend({
 	},
 	setEndDate: function(dateObject) {
 		this.endDate = dateObject.toISOString().slice(0,10).replace(/-/g, "");
+	},
+	constructQuery: function() {
+		this.query = gapi.client.analytics.data.ga.get({
+		    'ids': this.profileId,
+		    'start-date': this.startDate,
+		    'end-date': this.endDate,
+		    'metrics': this.metrics,
+		    'dimensions': this.dimensions
+		});
+	},
+	executeQuery: function() {
+		this.query.execute(function(resp) {
+			if (!resp.error) {
+				this.queryResponse = resp;
+				console.log(this.queryResponse);
+			} else {
+				alert('Oops, there was an error: ' + results.message);
+			}
+		});
 	}
 });
 
