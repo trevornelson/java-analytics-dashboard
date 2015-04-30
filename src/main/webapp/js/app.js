@@ -106,13 +106,12 @@ App.Models.Widget = Backbone.Model.extend({
 		    'metrics': this.metrics,
 		    'dimensions': this.dimensions
 		});
-		console.log(this.query);
 	},
 	executeQuery: function() {
 		this.query.execute(function(resp) {
 			if (!resp.error) {
 				this.queryResponse = resp.result;
-				console.log(this.queryResponse);
+				this.trigger('refreshData');
 			} else {
 				alert('Oops, there was an error: ' + results.message);
 			}
