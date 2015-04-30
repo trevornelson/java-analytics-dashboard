@@ -127,6 +127,9 @@ App.Views.Widgets = Backbone.View.extend({
 		});
 		
 		this.widgetViews.push(widgetView);
+		console.log('adding widget view:');
+		console.log(this.collection);
+		console.log(this.widgetViews);
 		
 		if (this.rendered) {
 			$(this.el).append(widgetView.render().el);
@@ -140,19 +143,14 @@ App.Views.Widgets = Backbone.View.extend({
 	},
 	render: function() {
 		this.rendered = true;
-		
+		console.log(this.collection);
 		$(this.el).empty();
+		console.log('After empty: ');
+		console.log(this.collection);
 		
 		_(this.widgetViews).each(function(widgetView) {
 			this.$el.append(widgetView.render().el);
 		});
-//		console.log('widgets view');
-//		console.log(this.collection);
-//		this.collection.each( function(index, widget) {
-//			console.log(widget);
-//			var widgetView = new App.Views.Widget({model: widget});
-//			this.$el.append(widget.render().el);
-//		});
 			
 		return this;
 	}
@@ -188,6 +186,32 @@ App.Views.DashboardEdit = Backbone.View.extend({
 	id: 'edit-dashboard-view',
 	className: 'well well-lg',
 	template: template('edit-dashboard'),
+	events: {
+		'click #new-widget-submit': 'createWidget'
+	},
+	createWidget: function(e) {
+		e.preventDefault();
+		console.log('clicked new widget submit*');
+		var title = this.$el.find('#new-widget-title').val();
+		var dimensions = this.$el.find('#new-widget-dimensions').val();
+		var metrics = this.$el.find('#new-widget-metrics').val();
+		var filters = this.$el.find('#new-widget-filters').val();
+		var startDate = this.$el.find('#new-widget-start').val();
+		var endDate = this.$el.find('#new-widget-end').val();
+		
+		newWidget = new App.Models.Widget({
+			title: title,
+			dimensions: dimensions,
+			metrics: metrics,
+			filters: filters,
+			startDate: startDate,
+			endDate: endDate
+		});
+		
+		this.model.get("widgets").add(newWidget);
+		console.log('Updated widget collection: ');
+		console.log(this.model.get("widgets"));
+	},
 	render: function() {
 		var modelJSON = this.model.toJSON();
 		this.$el.html(this.template(modelJSON));
@@ -314,7 +338,7 @@ App.enableAnalyticsSelectors = function() {
 		
 		var dashboardEditView = new App.Views.DashboardEdit({model: newDashboard});
 		$('#account-view-body').html(dashboardEditView.render().el);
-		App.enableNewWidgetSubmit(newDashboard); // adds event listener for new widget button in newly created dashboard
+		// App.enableNewWidgetSubmit(newDashboard); // adds event listener for new widget button in newly created dashboard
 	});
 }
 
@@ -342,10 +366,8 @@ App.enableNewWidgetSubmit = function(dashboard) {
 		
 		var widgetCollection = dashboard.get("widgets");
 		widgetCollection.set(newWidget);
+		console.log('Updated widget collection: ');
 		console.log(widgetCollection);
-		
-//		var widgetsView = new App.Views.Widgets({collection: widgetCollection});
-//		$('#edit-dashboard-view').append(widgetsView.render().el);
 	});
 }
 
