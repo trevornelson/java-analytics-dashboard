@@ -174,7 +174,8 @@ App.Views.Widgets = Backbone.View.extend({
 
 App.Views.Widget = Backbone.View.extend({
 	initialize: function() {
-
+		// bind the view to the model's refreshData event
+		this.model.bind('refreshData', this.renderChart)
 	},
 	tagName: 'div',
 	className: 'col-md-6',
