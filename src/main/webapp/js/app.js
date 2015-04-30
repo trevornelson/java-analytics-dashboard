@@ -83,7 +83,7 @@ App.Views.AnalyticsResources = Backbone.View.extend({
  * Widget MVC
  */
 App.Models.Widget = Backbone.Model.extend({
-	initialize: function(args) {
+	initialize: function(args) {		
 		this.profileId = args.profileId;
 		this.startDate = args.startDate;
 		this.endDate = args.endDate;
@@ -108,14 +108,14 @@ App.Models.Widget = Backbone.Model.extend({
 		});
 	},
 	executeQuery: function() {
-		this.query.execute(function(resp) {
+		this.query.execute($.proxy(function(resp) {
 			if (!resp.error) {
 				this.queryResponse = resp.result;
 				this.trigger('refreshData');
 			} else {
 				alert('Oops, there was an error: ' + results.message);
 			}
-		});
+		}, this));
 	}
 });
 
