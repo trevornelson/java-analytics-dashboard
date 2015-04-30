@@ -77,35 +77,6 @@ App.Views.AnalyticsResources = Backbone.View.extend({
 	}
 });
 
-/**
- * Dashboard MVC
- */
-
-App.Models.Dashboard = Backbone.Model.extend({
-	initialize: function(){
-		this.widgets = new App.Collections.Widget();
-	},
-	addWidget: function(widget) {
-		this.widgets.add(widget);
-	}
-});
-
-App.Views.DashboardEdit = Backbone.View.extend({
-	tagName: 'div',
-	id: 'edit-dashboard-view',
-	className: 'well well-lg',
-	template: template('edit-dashboard'),
-	render: function() {
-		var modelJSON = this.model.toJSON();
-		this.$el.html(this.template(modelJSON));
-		if (this.model.widgets.count > 0) {
-			var widgetsView = new App.Views.Widgets({collection: this.model.widgets});
-			this.$el.prepend(widgetsView.render().el);
-		}
-
-		return this;
-	}
-});
 
 
 /**
@@ -134,17 +105,17 @@ App.Collections.Widget = Backbone.Collection.extend({
 
 App.Views.Widgets = Backbone.View.extend({
 	tagName: 'div',
+	id: 'widgets-container',
 	className: 'row',
 	render: function() {
 		console.log('widgets view');
 		console.log(this.collection);
-		if (this.collection.length > 0) {
-			for(i = 0; i < this.collection.length; i++) {
-				var widget = new App.Views.Widget({model: this.collection[i]});
-				this.$el.append(widget.render().el);
-			}
-		}
-
+		this.collection.each( function(index, widget) {
+			console.log(widget);
+			var widgetView = new App.Views.Widget({model: widget});
+			this.$el.append(widget.render().el);
+		});
+			
 		return this;
 	}
 });
@@ -160,6 +131,39 @@ App.Views.Widget = Backbone.View.extend({
 		return this;
 	}
 });
+
+/**
+ * Dashboard MVC
+ */
+
+App.Models.Dashboard = Backbone.Model.extend({
+	defaults: {
+		widgets: new App.Collections.Widget()
+	},
+	addWidget: function(widget) {
+		this.widgets.add(widget);
+	}
+});
+
+App.Views.DashboardEdit = Backbone.View.extend({
+	tagName: 'div',
+	id: 'edit-dashboard-view',
+	className: 'well well-lg',
+	template: template('edit-dashboard'),
+	render: function() {
+		var modelJSON = this.model.toJSON();
+		this.$el.html(this.template(modelJSON));
+		
+		console.log(this.model);
+		console.log(this.model.get("widgets"));
+		console.log(this.model.widgets);
+		var widgetsView = new App.Views.Widgets({collection: this.model.get("widgets")});
+		this.$el.prepend(widgetsView.render().el);
+
+		return this;
+	}
+});
+
 
 /**
  * Authentication Controller
