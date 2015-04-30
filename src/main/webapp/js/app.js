@@ -180,13 +180,15 @@ App.Views.Widget = Backbone.View.extend({
 	tagName: 'div',
 	className: 'col-md-6',
 	template: template('widget-template'),
-	render: function() {
+	renderChart: function() {
 		var resp = this.model.get('queryResponse');
 		console.log(resp);
-		this.$el.html(this.template(this.model.toJSON()));
 		var data = [];
 		_.each(resp.rows, function(index, row) {data.push(row[1])});
 		console.log(data);
+	},
+	render: function() {
+		this.$el.html(this.template(this.model.toJSON()));
 		return this;
 	}
 });
