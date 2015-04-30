@@ -92,9 +92,11 @@ App.Views.DashboardEdit = Backbone.View.extend({
 	className: 'well well-lg',
 	template: template('edit-dashboard'),
 	render: function() {
-		var widgetsView = new App.Views.Widgets({collection: this.widgets})
-		this.$el.html(this.template);
-		this.$el.prepend(widgetsView.render().el);
+//		var widgetsCollection = this.model.widgets;
+//		console.log(this.model);
+//		var widgetsView = new App.Views.Widgets({collection: widgetsCollection});
+		this.$el.html(this.template(this.model.toJSON()));
+//		this.$el.prepend(widgetsView.render().el);
 		return this;
 	}
 });
@@ -139,7 +141,7 @@ App.Views.Widgets = Backbone.View.extend({
 App.Views.Widget = Backbone.View.extend({
 	tagName: 'div',
 	className: 'col-md-6',
-	template: template('widget-template');
+	template: template('widget-template'),
 	render: function() {
 		this.$el.html(this.template(this.model));
 		return this;
@@ -206,8 +208,8 @@ App.newDashboardModal = function(resp) {
 App.enableAnalyticsSelectors = function() {
 	$('#ga-accounts').on('click', '.ga-resource', function(e) {
 		e.preventDefault();
-		var $target = $(e.target);
-		var accountId = $target.data('id');
+		console.log('clicked account');
+		var accountId = $(this).data('id');
 		$('#new-dashboard-account').val(accountId);
 		App.queryProperties(accountId, function(resp) {
 			var analyticsProperties = new App.Views.AnalyticsResources({collection: resp.items});
@@ -217,9 +219,9 @@ App.enableAnalyticsSelectors = function() {
 	
 	$('#ga-properties').on('click', '.ga-resource', function(e) {
 		e.preventDefault();
-		var $target = $(e.target);
+		console.log('clicked property');
 		var accountId = $('#new-dashboard-account').val();
-		var propertyId = $target.data('id');
+		var propertyId = $(this).data('id');
 		$('#new-dashboard-property').val(propertyId);
 		App.queryProfiles(accountId, propertyId, function(resp) {
 			var analyticsProfiles = new App.Views.AnalyticsResources({collection: resp.items});
@@ -229,8 +231,8 @@ App.enableAnalyticsSelectors = function() {
 	
 	$('#ga-profiles').on('click', '.ga-resource', function(e) {
 		e.preventDefault();
-		var $target = $(e.target);
-		var profileId = $target.data('id');
+		console.log('clicked profile');
+		var profileId = $(this).data('id');
 		$('#new-dashboard-profile').val(profileId);
 	});
 	
@@ -240,6 +242,7 @@ App.enableAnalyticsSelectors = function() {
 	
 	$('#new-dashboard-submit').on('click', function(e) {
 		e.preventDefault();
+		console.log('clicked new dashboard submit button');
 		var title = $('#new-dashboard-title').val();
 		var accountId = $('#new-dashboard-account').val();
 		var propertyId = $('#new-dashboard-property').val();
@@ -253,7 +256,7 @@ App.enableAnalyticsSelectors = function() {
 		});
 		
 		// hide the modal after extracting the form inputs, because the modal is destroyed on hide.
-		('$create-dashboard-modal').modal('hide');
+		$('#create-dashboard-modal').modal('hide');
 		
 		var dashboardEditView = new App.Views.DashboardEdit({model: newDashboard});
 		$('#account-view-body').html(dashboardEditView.render().el);
@@ -264,15 +267,17 @@ App.enableAnalyticsSelectors = function() {
 App.enableNewWidgetSubmit = function(dashboard) {
 	$('#new-widget-submit').on('click', function(e) {
 		e.preventDefault();
-		var title = $('#new-widget-title');
-		var dimensions = $('#new-widget-dimensions');
-		var metrics = $('#new-widget-metrics');
-		var filters = $('#new-widget-filters');
-		var startDate = $('#new-widget-start');
-		var endDate = $('#new-widget-end');
+		var title = $('#new-widget-title').val();
+		var profileId = dashboard.profileId;
+		var dimensions = $('#new-widget-dimensions').val();
+		var metrics = $('#new-widget-metrics').val();
+		var filters = $('#new-widget-filters').val();
+		var startDate = $('#new-widget-start').val();
+		var endDate = $('#new-widget-end').val();
 		
 		newWidget = new App.Models.Dashboard({
 			title: title,
+			profileId: profileId,
 			dimensions: dimensions,
 			metrics: metrics,
 			filters: filters,
@@ -339,7 +344,6 @@ App.init = function(apiRoot) {
 	
 	apisToLoad = 3; // must match the number of calls to gapi.client.load()
 	gapi.client.load('accountsEndpoint', 'v1', callback, apiRoot);
-	// gapi.client.load('dashboardsEndpoint', 'v1', callback, apiRoot);  TODO create dashboardsEndpoint, increment apisToLoad
 	gapi.client.load('oauth2', 'v2', callback);
 	gapi.client.load('analytics', 'v3', callback);
 }
