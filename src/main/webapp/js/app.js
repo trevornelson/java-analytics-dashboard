@@ -104,17 +104,55 @@ App.Collections.Widget = Backbone.Collection.extend({
 });
 
 App.Views.Widgets = Backbone.View.extend({
+	initialize: function() {
+		// bind add and remove functions to the view
+		_(this).bindAll('add', 'remove');
+		
+		// array of widget views to keep track of them
+		this.widgetViews = [];
+		
+		// add each widget in the collection to the view
+		this.collection.each(this.add);
+		
+		// bind the view to the add and remove events of the collection
+		this.collection.bind('add', this.add);
+		this.collection.bind('remove', this.remove);
+	},
 	tagName: 'div',
 	id: 'widgets-container',
 	className: 'row',
-	render: function() {
-		console.log('widgets view');
-		console.log(this.collection);
-		this.collection.each( function(index, widget) {
-			console.log(widget);
-			var widgetView = new App.Views.Widget({model: widget});
-			this.$el.append(widget.render().el);
+	add: function(widget) {
+		var widgetView = new App.Views.Widget({
+			model: widget
 		});
+		
+		this.widgetViews.push(widgetView);
+		
+		if (this.rendered) {
+			$(this.el).append(widgetView.render().el);
+		}
+	},
+	remove: function(widget) {
+		var viewToRemove = _(this.widgetViews).select(function(wv) {return wv.model === widget;})[0];
+		this.widgetViews = _(this.widgetViews).without(viewToRemove);
+		
+		if (this.rendered) $(viewToRemove.el).remove();
+	},
+	render: function() {
+		this.rendered = true;
+		
+		$(this.el).empty();
+		
+		_(this.widgetViews).each(function(widgetView) {
+			this.$el.append(widgetView.render().el);
+		});
+//		console.log('widgets view');
+//		console.log(this.collection);
+//		this.collection.each( function(index, widget) {
+//			console.log(widget);
+//			var widgetView = new App.Views.Widget({model: widget});
+//			this.$el.append(widget.render().el);
+//		});
 			
 		return this;
 	}
@@ -156,9 +194,8 @@ App.Views.DashboardEdit = Backbone.View.extend({
 		
 		console.log(this.model);
 		console.log(this.model.get("widgets"));
-		console.log(this.model.widgets);
 		var widgetsView = new App.Views.Widgets({collection: this.model.get("widgets")});
-		this.$el.prepend(widgetsView.render().el);
+		this.$el.append(widgetsView.render().el);
 
 		return this;
 	}
@@ -303,11 +340,12 @@ App.enableNewWidgetSubmit = function(dashboard) {
 			endDate: endDate
 		});
 		
-		dashboard.widgets.add(newWidget);
-		console.log(dashboard.widgets);
-		var widgetCollection = dashboard.widgets;
-		var widgetsView = new App.Views.Widgets({collection: widgetCollection}); // TEMPORARY
-		$('#edit-dashboard-view').append(widgetsView.render().el); // TEMPORARY
+		var widgetCollection = dashboard.get("widgets");
+		widgetCollection.set(newWidget);
+		console.log(widgetCollection);
+		
+//		var widgetsView = new App.Views.Widgets({collection: widgetCollection});
+//		$('#edit-dashboard-view').append(widgetsView.render().el);
 	});
 }
 
