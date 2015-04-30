@@ -83,17 +83,14 @@ App.Views.AnalyticsResources = Backbone.View.extend({
  * Widget MVC
  */
 App.Models.Widget = Backbone.Model.extend({
-	initialize: function() {
-		this.query = this.constructQuery();
+	initialize: function(args) {
+		this.profileId = args.profileId;
+		this.startDate = args.startDate;
+		this.endDate = args.endDate;
+		this.metrics = args.metrics;
+		this.dimensions = args.dimensions;
+		this.constructQuery();
 		this.executeQuery();
-	},
-	defaults: {
-		profileId: '',
-		startDate: '',
-		endDate: '',
-		metrics: '',
-		dimensions: '',
-		title: 'New widget'
 	},
 	setStartDate: function(dateObject) {
 		this.startDate = dateObject.toISOString().slice(0,10).replace(/-/g, "");
@@ -103,17 +100,18 @@ App.Models.Widget = Backbone.Model.extend({
 	},
 	constructQuery: function() {
 		this.query = gapi.client.analytics.data.ga.get({
-		    'ids': this.profileId,
+		    'ids': 'ga:' + this.profileId,
 		    'start-date': this.startDate,
 		    'end-date': this.endDate,
 		    'metrics': this.metrics,
 		    'dimensions': this.dimensions
 		});
+		console.log(this.query);
 	},
 	executeQuery: function() {
 		this.query.execute(function(resp) {
 			if (!resp.error) {
-				this.queryResponse = resp;
+				this.queryResponse = resp.result;
 				console.log(this.queryResponse);
 			} else {
 				alert('Oops, there was an error: ' + results.message);
@@ -150,10 +148,7 @@ App.Views.Widgets = Backbone.View.extend({
 		});
 		
 		this.widgetViews.push(widgetView);
-		console.log('adding widget view:');
-		console.log(this.collection);
-		console.log(this.widgetViews);
-		
+
 		if (this.rendered) {
 			$(this.el).append(widgetView.render().el);
 		}
@@ -166,10 +161,8 @@ App.Views.Widgets = Backbone.View.extend({
 	},
 	render: function() {
 		this.rendered = true;
-		console.log(this.collection);
+
 		$(this.el).empty();
-		console.log('After empty: ');
-		console.log(this.collection);
 		
 		_(this.widgetViews).each(function(widgetView) {
 			this.$el.append(widgetView.render().el);
@@ -180,13 +173,19 @@ App.Views.Widgets = Backbone.View.extend({
 });
 
 App.Views.Widget = Backbone.View.extend({
+	initialize: function() {
+
+	},
 	tagName: 'div',
 	className: 'col-md-6',
 	template: template('widget-template'),
 	render: function() {
-		console.log('widget view');
-		console.log(this.model);
+		var resp = this.model.get('queryResponse');
+		console.log(resp);
 		this.$el.html(this.template(this.model.toJSON()));
+		var data = [];
+		_.each(resp.rows, function(index, row) {data.push(row[1])});
+		console.log(data);
 		return this;
 	}
 });
@@ -214,16 +213,17 @@ App.Views.DashboardEdit = Backbone.View.extend({
 	},
 	createWidget: function(e) {
 		e.preventDefault();
-		console.log('clicked new widget submit*');
 		var title = this.$el.find('#new-widget-title').val();
 		var dimensions = this.$el.find('#new-widget-dimensions').val();
 		var metrics = this.$el.find('#new-widget-metrics').val();
 		var filters = this.$el.find('#new-widget-filters').val();
 		var startDate = this.$el.find('#new-widget-start').val();
 		var endDate = this.$el.find('#new-widget-end').val();
+		var profileId = this.model.get('profileId')
 		
 		newWidget = new App.Models.Widget({
 			title: title,
+			profileId: profileId,
 			dimensions: dimensions,
 			metrics: metrics,
 			filters: filters,
@@ -232,15 +232,11 @@ App.Views.DashboardEdit = Backbone.View.extend({
 		});
 		
 		this.model.get("widgets").add(newWidget);
-		console.log('Updated widget collection: ');
-		console.log(this.model.get("widgets"));
 	},
 	render: function() {
 		var modelJSON = this.model.toJSON();
 		this.$el.html(this.template(modelJSON));
 		
-		console.log(this.model);
-		console.log(this.model.get("widgets"));
 		var widgetsView = new App.Views.Widgets({collection: this.model.get("widgets")});
 		this.$el.append(widgetsView.render().el);
 
@@ -309,7 +305,6 @@ App.newDashboardModal = function(resp) {
 App.enableAnalyticsSelectors = function() {
 	$('#ga-accounts').on('click', '.ga-resource', function(e) {
 		e.preventDefault();
-		console.log('clicked account');
 		var accountId = $(this).data('id');
 		$('#new-dashboard-account').val(accountId);
 		App.queryProperties(accountId, function(resp) {
@@ -320,7 +315,6 @@ App.enableAnalyticsSelectors = function() {
 	
 	$('#ga-properties').on('click', '.ga-resource', function(e) {
 		e.preventDefault();
-		console.log('clicked property');
 		var accountId = $('#new-dashboard-account').val();
 		var propertyId = $(this).data('id');
 		$('#new-dashboard-property').val(propertyId);
@@ -332,7 +326,6 @@ App.enableAnalyticsSelectors = function() {
 	
 	$('#ga-profiles').on('click', '.ga-resource', function(e) {
 		e.preventDefault();
-		console.log('clicked profile');
 		var profileId = $(this).data('id');
 		$('#new-dashboard-profile').val(profileId);
 	});
@@ -343,7 +336,6 @@ App.enableAnalyticsSelectors = function() {
 	
 	$('#new-dashboard-submit').on('click', function(e) {
 		e.preventDefault();
-		console.log('clicked new dashboard submit button');
 		var title = $('#new-dashboard-title').val();
 		var accountId = $('#new-dashboard-account').val();
 		var propertyId = $('#new-dashboard-property').val();
@@ -362,35 +354,6 @@ App.enableAnalyticsSelectors = function() {
 		var dashboardEditView = new App.Views.DashboardEdit({model: newDashboard});
 		$('#account-view-body').html(dashboardEditView.render().el);
 		// App.enableNewWidgetSubmit(newDashboard); // adds event listener for new widget button in newly created dashboard
-	});
-}
-
-App.enableNewWidgetSubmit = function(dashboard) {
-	$('#new-widget-submit').on('click', function(e) {
-		e.preventDefault();
-		console.log('clicked new widget submit');
-		var title = $('#new-widget-title').val();
-		var profileId = dashboard.profileId;
-		var dimensions = $('#new-widget-dimensions').val();
-		var metrics = $('#new-widget-metrics').val();
-		var filters = $('#new-widget-filters').val();
-		var startDate = $('#new-widget-start').val();
-		var endDate = $('#new-widget-end').val();
-		
-		newWidget = new App.Models.Dashboard({
-			title: title,
-			profileId: profileId,
-			dimensions: dimensions,
-			metrics: metrics,
-			filters: filters,
-			startDate: startDate,
-			endDate: endDate
-		});
-		
-		var widgetCollection = dashboard.get("widgets");
-		widgetCollection.set(newWidget);
-		console.log('Updated widget collection: ');
-		console.log(widgetCollection);
 	});
 }
 
