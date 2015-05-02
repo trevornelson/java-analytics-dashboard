@@ -89,6 +89,8 @@ App.Models.Widget = Backbone.Model.extend({
 		this.endDate = args.endDate;
 		this.metrics = args.metrics;
 		this.dimensions = args.dimensions;
+		this.query = '';
+		this.queryResponse = '';
 		this.constructQuery();
 		this.executeQuery();
 	},
@@ -99,18 +101,18 @@ App.Models.Widget = Backbone.Model.extend({
 		this.endDate = dateObject.toISOString().slice(0,10).replace(/-/g, "");
 	},
 	constructQuery: function() {
-		this.query = gapi.client.analytics.data.ga.get({
-		    'ids': 'ga:' + this.profileId,
+		this.set({'query': gapi.client.analytics.data.ga.get({
+		    'ids': 'ga:' + this.profileId,	// NEED to change to gets
 		    'start-date': this.startDate,
 		    'end-date': this.endDate,
 		    'metrics': this.metrics,
 		    'dimensions': this.dimensions
-		});
+		})});
 	},
 	executeQuery: function() {
-		this.query.execute($.proxy(function(resp) {
+		this.get('query').execute($.proxy(function(resp) {
 			if (!resp.error) {
-				this.queryResponse = resp.result;
+				this.set({'queryResponse': resp.result});
 				this.trigger('refreshData');
 			} else {
 				alert('Oops, there was an error: ' + results.message);
@@ -173,17 +175,32 @@ App.Views.Widgets = Backbone.View.extend({
 
 App.Views.Widget = Backbone.View.extend({
 	initialize: function() {
+		_(this).bindAll('render','renderChart');
+		
+		if (this.model) {
+			this.model.on('change', this.render, this);
+			console.log(this.model);
+		}
+		
 		// bind the view to the model's refreshData event
-		this.model.bind('refreshData', this.renderChart)
+		this.model.bind('change', this.render);
+		this.model.bind('refreshData', this.renderChart);
 	},
 	tagName: 'div',
 	className: 'col-md-6',
 	template: template('widget-template'),
 	renderChart: function() {
+		console.log(this.model);
 		var resp = this.model.get('queryResponse');
-		console.log(resp);
+		console.log(resp.rows);
 		var data = [];
-		_.each(resp.rows, function(index, row) {data.push(row[1])});
+		var legend = [];
+		console.log(resp.rows[0][1]);
+		for (i = 0; i < resp.rows.length; i++) {
+			data.push(resp.rows[i][1]);
+			legend.push(resp.rows[i][0]);
+		}
+		console.log(legend);
 		console.log(data);
 	},
 	render: function() {
