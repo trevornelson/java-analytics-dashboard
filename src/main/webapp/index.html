@@ -118,10 +118,22 @@
 				<input type="text" id="new-widget-title">
 			</label>
 			<label>Dimensions: 
-				<input type="text" id="new-widget-dimensions" placeholder="What you want to measure.">
+				<select id="new-widget-dimensions">
+					<option value="ga:medium">Medium</option>
+					<option value="ga:source">Source</option>
+					<option value="ga:campaign">Campaign</option>
+					<option value="ga:userType">New/Returning User</option>
+					<option value="ga:deviceCategory">Device</option>
+				</select>
 			</label>
-			<label>Metrics: 
-				<input type="text" id="new-widget-metrics" placeholder="How you'll measure it.">
+			<label>Metrics:
+				<select id="new-widget-metrics">
+					<option value="ga:sessions">Sessions</option>
+					<option value="ga:bounces">Bounces</option>
+					<option value="ga:users">Users</option>
+					<option value="ga:sessionDuration">Session Duration</option>
+					<option value="ga:transactions">Transactions</option>
+				</select> 
 			</label>
 			<label>Filters: 
 				<input type="text" id="new-widget-filters" placeholder="Narrow things down.">
