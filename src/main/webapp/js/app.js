@@ -324,6 +324,7 @@ App.enableAuthButtons = function() {
 	// Add event listener to getAccount button
 	$('#createAccount').on('click', function(e) {
 		e.preventDefault();
+		$('#login-hero').hide();
 		App.signin(false, App.userAuthenticated);
 	});
 	
